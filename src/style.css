@@ -55,9 +55,9 @@ body::before {
     justify-content: space-around;
 }
 
-.window {
-    margin: 48px 96px 0 96px;
-    height: calc(100vh - 300px);
+.main-window {
+    margin: 0 96px 0 96px;
+    height: calc(100vh - 200px);
 }
 
 .window-body {
@@ -67,7 +67,7 @@ body::before {
 }
 
 .game {
-    margin: 128px 0 0 0;
+    margin: 32px 0 0 0;
     display: none;
 }
 
@@ -108,4 +108,16 @@ body::before {
     width: 200px;
     margin: 12px 0 0 50%;
     transform: translateX(-50%);
+}
+
+.error-window {
+    width: 300px;
+    position: absolute;
+    top: 0;
+    margin: 50vh 0 0 50vw;
+    transform: translate(-50%, -50%);
+}
+
+.round-info {
+    margin: 0 0 8px 0;
 }

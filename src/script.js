@@ -1,5 +1,6 @@
-const colors = ['Red', 'Blue', 'Green', 'Yellow', 'White', 'Purple'];
+const colors = ['red', 'blue', 'green', 'yellow', 'white', 'purple'];
 const randomColors = [];
+const rounds = [];
 let round = 1;
 
 function start() {
@@ -19,7 +20,6 @@ function generateRandomColors() {
         randomColors.push(colors[Math.floor(Math.random() * 6)]);
     }
     console.log(randomColors);
-
 }
 
 function createWrapper() {
@@ -83,8 +83,16 @@ async function guess() {
         chosenColors.push(select.value);
     })
     validateInput(chosenColors).then(result => {
-        if (!result) looseRound();
-        else validateColors(chosenColors);
+        if (!result) {
+            showError();
+        }
+        else {
+            if (validateColors(chosenColors)) {
+                win();
+            } else {
+                looseRound();
+            }
+        }
     })
 }
 
@@ -92,7 +100,17 @@ function looseRound() {
     round++;
     removeGuessButton()
     createRoundField(document.querySelector('.game-wrapper'));
+    refillFields();
     addGuessButton();
+}
+
+function refillFields() {
+    rounds.forEach((round, i) => {
+        round.colors.forEach((color, index) => {
+            const fields = document.querySelector(`#row-${i + 1}`).querySelectorAll('.field');
+            fields[index].querySelector(`[value="${color}"]`).setAttribute('selected', 'true');
+        });
+    })
 }
 
 function validateInput(choices) {
@@ -106,6 +124,94 @@ function validateInput(choices) {
     })
 }
 
-function validateColors() {
+function showError() {
+    const window = document.createElement('div');
+    window.classList.add('dialog')
+    const error = `
+    <div class="window error-window">
+                <div class="title-bar">
+                <div class="title-bar-text">
+                    Error
+                </div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize"></button>
+                    <button aria-label="Maximize"></button>
+                    <button aria-label="Close" onclick="closeError()"></button>
+                </div>
+            </div>
+        <div class="window-body">
+            <p>You need to choose 4 colors!</p>
+            <button onclick="closeError()">Ok</button>
+        </div>
+    </div>
+    `;
+    window.innerHTML = error;
+    document.body.appendChild(window);
+}
 
+function closeError() {
+    const dialog = document.querySelector('.dialog');
+    document.body.removeChild(dialog);
+}
+
+function validateColors(choices) {
+    const correctlyPositioned = checkCorrectPositions(choices);
+    const correctColors = checkCorrectColors(combineArrays(choices));
+    const roundDiv = document.querySelector(`#row-${round}`);
+    roundDiv.innerHTML += `<p class="round-info">Correctly positioned: ${correctlyPositioned}, Correct colors: ${correctColors}</p>`
+    rounds.push({colors: choices, correctlyPositioned: correctlyPositioned, correctColors: correctColors});
+    return correctlyPositioned === 4;
+}
+
+function checkCorrectPositions(choices) {
+    let correctAmount = 0;
+    choices.forEach((choice, index) => {
+        if (choice === randomColors[index].toLowerCase()) {
+            choice = '';
+            correctAmount++;
+        }
+    })
+    return correctAmount;
+}
+
+function checkCorrectColors(choices) {
+    let correctAmount = 0;
+    choices.forEach((choice) => {
+        choices.forEach(chosenChoice => {
+            if (choice.correct === chosenChoice.chosen) {
+                choices.splice(choices.indexOf(choice));
+                correctAmount++;
+            }
+        })
+    })
+    return correctAmount;
+}
+
+function combineArrays(choices) {
+    const combined = [];
+    for (let i = 0; i < 4; i++) {
+        if (choices[i] !== randomColors[i]) {
+            combined.push({correct: randomColors[i], chosen: choices[i]});
+        }
+    }
+    return combined;
+}
+
+function reload() {
+    window.location.reload();
+}
+
+function win() {
+    const body = document.querySelector('.window-body');
+    const gameBody = document.querySelector('.game-wrapper');
+    body.removeChild(gameBody);
+    const victoryText = document.createElement('div');
+    victoryText.classList.add('victory');
+    victoryText.innerHTML = `
+        <p>You Won!</p>
+        <div class="restart-wrapper">
+            <button onclick="reload()">Play Again</button>
+        </div>
+    `;
+    body.appendChild(victoryText);
 }
