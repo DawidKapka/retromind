@@ -9,17 +9,23 @@ function start() {
     const game = document.querySelector('.game');
     wrapper.removeChild(startButton);
     game.style.display = "inherit";
+    generateCpuUsage();
     generateRandomColors()
     createWrapper();
     createRoundField(document.querySelector('.game-wrapper'));
     addGuessButton();
 }
 
+function generateCpuUsage() {
+    setInterval(() => {
+        document.querySelector('.cpu').innerHTML = `${Math.floor(Math.random() * 200)}%`;
+    }, 2000)
+}
+
 function generateRandomColors() {
     for (i of Array(4).keys()) {
         randomColors.push(colors[Math.floor(Math.random() * 6)]);
     }
-    console.log(randomColors);
 }
 
 function createWrapper() {

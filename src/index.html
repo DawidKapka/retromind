@@ -18,7 +18,7 @@
     </div>
     <div class="game">
         <div class="window main-window">
-            <div class="title-bar">
+            <div class="title-bar" onmousedown="beginDrag(event)">
                 <div class="title-bar-text">
                     Mastermind
                 </div>
@@ -31,12 +31,13 @@
             <div class="window-body">
             </div>
             <div class="status-bar">
-                <p class="status-bar-field">Press F1 for help</p>
+                <p class="status-bar-field">Press F1 for help (don't actually)</p>
                 <p class="status-bar-field">Mastermind 1.0.0</p>
-                <p class="status-bar-field">CPU Usage: 114%</p>
+                <p class="status-bar-field">CPU Usage: <span class="cpu">114%</span></p>
             </div>
         </div>
     </div>
     <script src="script.js"></script>
+    <script src="drag.js"></script>
 </body>
 </html>
