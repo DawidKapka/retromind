@@ -94,7 +94,7 @@ async function guess() {
         }
         else {
             if (validateColors(chosenColors)) {
-                win();
+                winOrLoose(true);
             } else {
                 looseRound();
             }
@@ -104,6 +104,9 @@ async function guess() {
 
 function looseRound() {
     round++;
+    if (round === 10) {
+        winOrLoose(false);
+    }
     removeGuessButton()
     createRoundField(document.querySelector('.game-wrapper'));
     refillFields();
@@ -207,17 +210,20 @@ function reload() {
     window.location.reload();
 }
 
-function win() {
+function winOrLoose(isWin) {
     const body = document.querySelector('.window-body');
     const gameBody = document.querySelector('.game-wrapper');
     body.removeChild(gameBody);
     const victoryText = document.createElement('div');
     victoryText.classList.add('victory');
     victoryText.innerHTML = `
-        <p>You Won!</p>
+        <p>${isWin ? 'You Won!' : 'You Lost!'}</p>
+        ${isWin ? `<p>Rounds Played: ${round}</p>` : ''}
         <div class="restart-wrapper">
             <button onclick="reload()">Play Again</button>
         </div>
     `;
     body.appendChild(victoryText);
 }
+
+
